@@ -3,11 +3,17 @@ networks:
     driver: bridge
     name: roboshop
     #external = true #If i created netwokr already using docker network create roboshop
-
+volumes:
+  mongodb:
+  redis:
+  mysql:
+  rabbitmq: #docker volume create rabbitmq
 services:
   mongodb:
     image: shivapaturi01/mongodb:v1
     container_name: mongodb
+    volumes:
+    - mongodb:/data/db
   catalogue:
     image: shivapaturi01/catalogue:v1
     container_name: catalogue
@@ -16,6 +22,8 @@ services:
   redis:
     image: redis:7.0
     container_name: redis
+    volumes:
+    - redis:/data
   user:
     image: shivapaturi01/user:v1
     container_name: user
@@ -31,6 +39,8 @@ services:
   mysql:
     image: shivapaturi01/mysql:v1
     container_name: mysql
+    volumes:
+    - mysql:/var/lib/mysql
   shipping:
     image: shivapaturi01/shipping:v1
     container_name: shipping
@@ -43,6 +53,8 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: roboshop
       RABBITMQ_DEFAULT_PASS: roboshop123
+    volumes:
+    - rabbitmq:/var/lib/rabbitmq
   payment:
     image: shivapaturi01/payment:v1
     container_name: payment
