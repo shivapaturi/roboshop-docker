@@ -1,32 +1,19 @@
 # Stage 1: Builder
-FROM maven:3.9-eclipse-temurin-17-alpine AS builder
+FROM maven AS builder
 WORKDIR /opt/server
-
-# Cache dependencies in a separate layer
 COPY pom.xml .
-RUN mvn dependency:go-offline -B
-
-# Copy source code and build final jar
-COPY src ./src
-RUN mvn clean package -DskipTests
+COPY src /opt/server/src
+RUN mvn clean package
 
 # Stage 2: Runtime
 FROM eclipse-temurin:17-jre-alpine
+EXPOSE 8080
 WORKDIR /opt/server
-
-# Create non-root user and group
+COPY --from=builder /opt/server/target/shipping-*.jar /opt/server/shipping.jar 
 RUN addgroup -S roboshop && adduser -S roboshop -G roboshop
-
-# Copy compiled artifact with correct ownership
-COPY --from=builder --chown=roboshop:roboshop /opt/server/target/shipping-*.jar /opt/server/shipping.jar 
-
 ENV CART_ENDPOINT="cart:8080" \
     DB_HOST="mysql"
-
-EXPOSE 8080
-
 USER roboshop
-
 CMD ["java", "-jar", "shipping.jar"]
 
 # FROM maven
