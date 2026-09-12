@@ -10,7 +10,7 @@ FROM python:3.9-slim
 EXPOSE 8080
 RUN addgroup -S roboshop && adduser -S roboshop -G roboshop
 WORKDIR /opt/server
-COPY --from=builder /opt/server /opt/server/
+COPY --from=builder --chown=roboshop:roboshop /opt/server /opt/server/
 USER roboshop
 CMD ["uwsgi", "--ini", "payment.ini"]
 
