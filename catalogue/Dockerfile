@@ -1,6 +1,5 @@
-# =========================
 # Stage 1: Builder
-# =========================
+
 FROM node:20-alpine3.21 AS builder
 
 WORKDIR /opt/server
@@ -11,10 +10,8 @@ RUN npm install
 
 COPY *.js .
 
-
-# =========================
 # Stage 2: Runtime
-# =========================
+
 FROM node:20-alpine3.21
 
 RUN addgroup -S roboshop && \
