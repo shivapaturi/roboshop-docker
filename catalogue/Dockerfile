@@ -10,7 +10,7 @@ COPY *.py .
 FROM python:3.9-slim
 EXPOSE 8080
 
-# Debian-compatible user creation
+# Use Debian syntax for creating user and group
 RUN groupadd -r roboshop && useradd -r -g roboshop roboshop
 
 WORKDIR /opt/server
