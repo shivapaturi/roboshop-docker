@@ -6,7 +6,7 @@ COPY requirements.txt .
 RUN pip3 install -r requirements.txt
 
 
-FROM 3.9.23-alpine3.22
+FROM python:3.9.23-alpine3.22
 EXPOSE 8080
 RUN addgroup -S roboshop && adduser -S roboshop -G roboshop
 WORKDIR /opt/server
