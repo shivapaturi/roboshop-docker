@@ -1,22 +1,23 @@
 # Stage 1: Builder
-
-FROM node:20-alpine3.21 AS builder
+FROM python:3.9 AS builder
 WORKDIR /opt/server
-COPY package.json .
-RUN npm install
-COPY *.js .
-
+COPY requirements.txt .
+RUN pip3 install -r requirements.txt
+COPY payment.ini .
+COPY *.py .
 
 # Stage 2: Runtime
+FROM python:3.9-slim
+EXPOSE 8080
 
-FROM node:20-alpine3.21
-RUN addgroup -S roboshop && adduser -S roboshop -G roboshop
-ENV MONGO="true" \
-    MONGO_URL="mongodb://mongodb:27017/catalogue"
+# Debian-compatible user creation
+RUN groupadd -r roboshop && useradd -r -g roboshop roboshop
+
 WORKDIR /opt/server
+COPY --from=builder --chown=roboshop:roboshop /opt/server /opt/server/
+
 USER roboshop
-COPY --from=builder --chown=roboshop:roboshop /opt/server /opt/server
-CMD ["node", "server.js"]
+CMD ["uwsgi", "--ini", "payment.ini"]
 
 # FROM node:20-alpine3.21
 
