@@ -2,20 +2,17 @@
 FROM python:3.9 AS builder
 WORKDIR /opt/server
 COPY requirements.txt .
-RUN pip3 install -r requirements.txt
 COPY payment.ini .
 COPY *.py .
+RUN pip3 install -r requirements.txt
 
 # Stage 2: Runtime
-FROM python:3.9-slim
+FROM python:3.9.23-alpine3.22
 EXPOSE 8080
-
-# Use Debian syntax for creating user and group
 RUN groupadd -r roboshop && useradd -r -g roboshop roboshop
-
 WORKDIR /opt/server
-COPY --from=builder --chown=roboshop:roboshop /opt/server /opt/server/
-
+COPY --from=builder /opt/server /opt/server/
+RUN pip3 install -r requirements.txt
 USER roboshop
 CMD ["uwsgi", "--ini", "payment.ini"]
 
