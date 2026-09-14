@@ -25,7 +25,7 @@ RUN addgroup -S roboshop && adduser -S roboshop -G roboshop
 # Copy installed packages from builder
 COPY --from=builder /install /usr/local
 # Copy app files
-COPY --chown=roboshop:roboshop payment.ini *.py requirements.txt
+COPY --chown=roboshop:roboshop payment.ini *.py requirements.txt .
 ENV CART_HOST="cart" \
     CART_PORT="8080" \
     USER_HOST="user" \
