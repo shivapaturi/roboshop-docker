@@ -20,7 +20,6 @@ ENV REDIS_HOST="redis" \
     CATALOGUE_PORT="8080"
 COPY --from=build --chown=roboshop:roboshop /opt/server /opt/server
 USER roboshop
-ENTRYPOINT ["node"]
 CMD ["node", "server.js"]
 
 # FROM node:20
